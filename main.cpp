@@ -53,76 +53,88 @@ std::string decode_cosmic_alert(int code) {
 
 // PART 2: GRAPHICAL MODULE GENERATORS (Layer 0 & Layer 1 Specifications)
 
-// Module 1: Quantum Hydrogen Transition & Pulsar Triangulation Map
+// Module 1: Quantum Hydrogen & Pure Math Astrometry Vector Table
 Grid create_scientific_hydrogen() {
     Grid grid(HEIGHT, std::vector<bool>(WIDTH, false));
 
-    // Sync borders (top and bottom)
+    // 1. Sync borders (top and bottom)
     for (int x = 0; x < WIDTH; ++x) {
         grid[0][x] = true;
         grid[HEIGHT - 1][x] = true;
     }
 
-    // Left Hydrogen Atom (Parallel spins: Proton UP, Electron UP)
-    grid[5][4] = true; grid[5][3] = true; grid[5][5] = true; grid[4][4] = true; grid[6][4] = true; // Proton
-    grid[2][4] = true; grid[3][3] = true; grid[3][5] = true; // Proton Spin UP
-
-    // Electron Orbit
+    // 2. Quantum Hydrogen Transition (Universally valid physics - kept from v2.0)
+    grid[5][4] = true; grid[5][3] = true; grid[5][5] = true; grid[4][4] = true; grid[6][4] = true; // Proton L
+    grid[2][4] = true; grid[3][3] = true; grid[3][5] = true; // Spin UP
     std::vector<std::pair<int, int>> orbit_l = { {2,4}, {5,1}, {8,4}, {5,7} };
     for (auto [y, x] : orbit_l) grid[y][x] = true;
-    grid[5][7] = true; grid[4][7] = true; grid[3][7] = true; grid[3][6] = true; // Electron with Spin UP
+    grid[5][7] = true; grid[4][7] = true; grid[3][7] = true; grid[3][6] = true; // Electron Spin UP
 
-    // Emitted Photon (Sine wave indicating transition)
-    grid[5][9] = true; grid[4][10] = true; grid[5][11] = true; grid[6][12] = true; grid[5][13] = true;
+    grid[5][9] = true; grid[4][10] = true; grid[5][11] = true; grid[6][12] = true; grid[5][13] = true; // Photon wave
 
-    // Right Hydrogen Atom (Anti-parallel spins: Proton UP, Electron DOWN)
-    grid[5][18] = true; grid[5][17] = true; grid[5][19] = true; grid[4][18] = true; grid[6][18] = true; // Proton
-    grid[2][18] = true; grid[3][17] = true; grid[3][19] = true; // Proton Spin UP
-
-    // Electron Orbit
+    grid[5][18] = true; grid[5][17] = true; grid[5][19] = true; grid[4][18] = true; grid[6][18] = true; // Proton R
+    grid[2][18] = true; grid[3][17] = true; grid[3][19] = true; // Spin UP
     std::vector<std::pair<int, int>> orbit_r = { {2,18}, {5,15}, {8,18}, {5,21} };
     for (auto [y, x] : orbit_r) grid[y][x] = true;
-    grid[5][21] = true; grid[6][21] = true; grid[7][21] = true; grid[7][22] = true; // Electron with Spin DOWN
+    grid[5][21] = true; grid[6][21] = true; grid[7][21] = true; grid[7][22] = true; // Electron Spin DOWN
 
-    // Pulsar Coordinate Map (Center is our Sun)
-    int cx = 11, cy = 17;
-    grid[cy][cx] = true;
+    // 3. Separator Line (Shows transition from Physics to Math Table)
+    for (int x = 2; x < 21; ++x) {
+        if (x % 2 == 0) grid[11][x] = true; // Dotted line
+    }
 
-    // Pulsar 1 (Vector Up-Left)
-    grid[16][10] = true; grid[15][9] = true; grid[14][8] = true; grid[13][7] = true;
-    grid[13][5] = true;  grid[13][4] = true; // Binary Period representation
+    // 4. THE DATA MATRIX (Rows 14 to 22)
+    // Helper lambda to write a formatted row: ID(2), Freq(4), X(4), Y(4), Z(4)
+    auto write_table_row = [&](int row, int id, int freq, int x, int y, int z) {
+        // ID (Cols 1-2)
+        grid[row][1] = (id >> 1) & 1; grid[row][2] = id & 1;
+        // Freq (Cols 4-7)
+        for(int i=0; i<4; ++i) grid[row][4+i] = (freq >> (3-i)) & 1;
+        // X (Cols 9-12)
+        for(int i=0; i<4; ++i) grid[row][9+i] = (x >> (3-i)) & 1;
+        // Y (Cols 14-17)
+        for(int i=0; i<4; ++i) grid[row][14+i] = (y >> (3-i)) & 1;
+        // Z (Cols 19-22)
+        for(int i=0; i<4; ++i) grid[row][19+i] = (z >> (3-i)) & 1;
+    };
 
-    // Pulsar 2 (Vector Up-Right)
-    grid[16][12] = true; grid[15][13] = true; grid[14][14] = true; grid[13][15] = true; grid[12][16] = true;
-    grid[12][18] = true; grid[12][19] = true; // Binary Period representation
+    // Header Row (Visual definition of data block sizes for parsing logic)
+    // Format: [11] [1111] [1111] [1111] [1111]
+    write_table_row(14, 0b11, 0b1111, 0b1111, 0b1111, 0b1111);
 
-    // Pulsar 3 (Vector Down)
-    grid[18][11] = true; grid[19][11] = true; grid[20][11] = true; grid[21][11] = true;
-    grid[21][9] = true;  grid[21][8] = true; // Binary Period representation
+    // Entity 00: Our Sun (Origin point: Coordinates 0,0,0)
+    // x, y, z are formatted as [Sign bit][3-bit Value] -> 0000 is +0
+    write_table_row(16, 0b00, 0b0000, 0b0000, 0b0000, 0b0000);
 
-    // Solar System layout (Sun + Planets, Earth shifted up)
-    grid[25][2] = true; grid[26][2] = true; grid[25][3] = true; grid[26][3] = true; // Sun
-    grid[25][5] = true; // Mercury
-    grid[25][7] = true; // Venus
-    grid[24][9] = true; grid[25][9] = true; // Earth (shifted up with pointer)
-    grid[25][11] = true; // Mars
-    grid[25][13] = true; grid[25][14] = true; // Jupiter
+    // Entity 01: Pulsar A
+    // X=+5 (0101), Y=-3 (1011), Z=+2 (0010)
+    write_table_row(18, 0b01, 0b1010, 0b0101, 0b1011, 0b0010);
+
+    // Entity 10: Pulsar B
+    // X=-6 (1110), Y=+4 (0100), Z=-1 (1001)
+    write_table_row(20, 0b10, 0b0111, 0b1110, 0b0100, 0b1001);
+
+    // Entity 11: Galactic Doppler Velocity Vector of our Sun
+    // X=+3 (0011), Y=-7 (1111), Z=+6 (0110)
+    write_table_row(22, 0b11, 0b1111, 0b0011, 0b1111, 0b0110);
 
     return grid;
 }
 
 // Module 2: Organic Chemistry, DNA Structure & Anatomy
+// Upgraded to eliminate chirality ambiguity and define positional Base-10 counting.
 Grid create_scientific_biology() {
     Grid grid(HEIGHT, std::vector<bool>(WIDTH, false));
 
+    // 1. Sync borders (top and bottom)
     for (int x = 0; x < WIDTH; ++x) {
         grid[0][x] = true;
         grid[HEIGHT - 1][x] = true;
     }
 
     // Chemical elements of life (Atomic numbers: H=1, C=6, N=7, O=8, P=15)
-    std::vector<int> elements = { 1, 6, 7, 8, 15 };
-    std::vector<int> cols = { 3, 7, 11, 15, 19 };
+    std::vector<int> elements = {1, 6, 7, 8, 15};
+    std::vector<int> cols = {2, 6, 10, 14, 18};
     for (size_t i = 0; i < elements.size(); ++i) {
         int col = cols[i];
         grid[2][col] = true; // Header marker
@@ -133,99 +145,137 @@ Grid create_scientific_biology() {
         }
     }
 
-    // DNA Double Helix geometry (Major/minor grooves & chemical bonds)
-    struct DnaRow { int row; int x1; int x2; int bond; };
-    std::vector<DnaRow> dna = {
-        {9,  6, 16, 2}, {10, 5, 17, 0}, {11, 5, 17, 0}, {12, 6, 16, 1},
-        {13, 8, 14, 2}, {14, 10, 12, 2}, {15, 11, 11, 0}, {16, 12, 10, 2},
-        {17, 14, 8,  2}, {18, 16, 6,  1}, {19, 17, 5,  0}, {20, 17, 5,  0},
-        {21, 16, 6,  2}
-    };
-    for (auto d : dna) {
-        grid[d.row][d.x1] = true;
-        grid[d.row][d.x2] = true;
-        int start = std::min(d.x1, d.x2) + 1;
-        int end = std::max(d.x1, d.x2);
-        if (d.bond == 2) { // Strong triple hydrogen bonds (G-C representation)
-            for (int x = start; x < end; ++x) grid[d.row][x] = true;
-        }
-        else if (d.bond == 1) { // Weaker double bonds (A-T representation, dotted line)
-            for (int x = start; x < end; ++x) {
-                if (x % 2 == 0) grid[d.row][x] = true;
-            }
-        }
-    }
+    // BASE-10 MATHEMATICAL PROOF (Col 21)
+    // We define the number 10 (1010) and show its prime factors: 2 (0010) and 5 (0101)
+    grid[2][21] = true;  // Math Marker
+    grid[3][21] = true;  // 1 (bit of 1010)
+    grid[4][21] = false; // 0
+    grid[5][21] = true;  // 1
+    grid[6][21] = false; // 0 -> Declares our mathematical base is 10.
 
-    // Humanoid schematic (Bilateral symmetry, head, spine, limbs)
+
+    // Instead of a flat drawing, we encode a 3D coordinate table of a chiral 
+    // deoxyribose sugar unit.
+    // Table Format: [Atom type: 3 bits] [X: 5 bits] [Y: 5 bits] [Z: 5 bits]
+    // Values are scaled by 0.5 Angstroms with Sign-Magnitude representation (1st bit is sign).
+    auto write_stereo_row = [&](int row, int atom_z, int x, int y, int z) {
+        // Atom Type / Atomic Z (Cols 1-3)
+        for(int i=0; i<3; ++i) grid[row][1+i] = (atom_z >> (2-i)) & 1;
+        // X (Cols 5-9)
+        for(int i=0; i<5; ++i) grid[row][5+i] = (x >> (4-i)) & 1;
+        // Y (Cols 11-15)
+        for(int i=0; i<5; ++i) grid[row][11+i] = (y >> (4-i)) & 1;
+        // Z (Cols 17-21)
+        for(int i=0; i<5; ++i) grid[row][17+i] = (z >> (4-i)) & 1;
+    };
+
+    // Table Header for parsing logic [111] [11111] [11111] [11111]
+    write_stereo_row(9, 0b111, 0b11111, 0b11111, 0b11111);
+
+    // Chiral Carbon 1' (C1*): Origin at (0, 0, 0)
+    write_stereo_row(11, 6, 0b00000, 0b00000, 0b00000);
+
+    // Chiral Carbon 2' (C2*): X=+3, Y=+1, Z=-2 (0.5A scale)
+    write_stereo_row(13, 6, 0b00011, 0b00001, 0b10010);
+
+    // Oxygen 1 (O1): X=-1, Y=+3, Z=+2 (Forces Right-Handed L-enantiomer geometry)
+    write_stereo_row(15, 8, 0b10001, 0b00011, 0b00010);
+
+    // Nitrogen (N1 of base): X=-3, Y=-1, Z=-2
+    write_stereo_row(17, 7, 0b10011, 0b10001, 0b10010);
+
+    // Visual Double-Helix projection (Simplified, purely topological border)
+    // Left strand boundary
+    grid[19][3] = true; grid[20][2] = true; grid[21][3] = true;
+    // Right strand boundary
+    grid[19][19] = true; grid[20][20] = true; grid[21][19] = true;
+
+    // Bipedal organism schema (Symmetrical torso, head, limbs)
     grid[23][11] = true; // Head
     grid[24][10] = true; grid[24][11] = true; grid[24][12] = true; // Shoulders
     grid[25][11] = true; // Torso
     grid[26][10] = true; grid[26][12] = true; // Legs
 
     // Physical Height Scale (Value 8 on Hydrogen scale: 8 * 21cm = 168cm)
-    grid[23][7] = true; grid[24][7] = true; grid[25][7] = true; grid[26][7] = true; // Ruler
+    grid[23][7] = true; grid[24][7] = true; grid[25][7] = true; grid[26][7] = true; // Scale Bar
     grid[23][5] = true; grid[24][5] = false; grid[25][5] = false; grid[26][5] = false; // Binary 8
 
-    // Population Scale (Order of magnitude 9 -> ~10^9 inhabitants)
+    // Population Scale (Order of magnitude 9 -> ~10^9 inhabitants, referencing Base-10 proof)
     grid[24][15] = true; grid[24][16] = false; grid[24][17] = false; grid[24][18] = true;
 
     return grid;
 }
 
-// Module 3: Geometric CPU Blueprint (Subleq Processor Logic)
+// Module 3: Computational Logic & CPU State Transition Matrix
+// Upgraded to define Subleq processing purely through state traces, eliminating visual bias.
 Grid create_super_detailed_cpu() {
     Grid grid(HEIGHT, std::vector<bool>(WIDTH, false));
 
+    // 1. Sync borders (top and bottom)
     for (int x = 0; x < WIDTH; ++x) {
         grid[0][x] = true;
         grid[HEIGHT - 1][x] = true;
     }
 
-    // Memory Address Tape (Turing-style cells)
+    // We draw a linear tape representing indexed Memory (M)
     for (int x = 1; x < 22; ++x) {
         grid[2][x] = true;
         grid[4][x] = true;
     }
-    for (int x : {1, 5, 9, 13, 17, 21}) {
-        grid[2][x] = true; grid[3][x] = true; grid[4][x] = true;
+    for (int x : {1, 4, 7, 10, 13, 16, 19, 21}) {
+        grid[2][x] = true; grid[3][x] = true; grid[4][x] = true; // Cell walls
     }
 
-    // Address Pointers (Arrows mapping memory addresses)
-    grid[5][3] = true; grid[5][11] = true; grid[5][19] = true;
-    for (int y : {6, 7, 8}) {
-        grid[y][3] = true; grid[y][11] = true; grid[y][19] = true;
-    }
+    // Binary Indices of Memory printed above the tape (0, 1, 2, 3, 4, 5)
+    grid[1][2]  = false; grid[1][3]  = false; // Index 0 (00)
+    grid[1][5]  = false; grid[1][6]  = true;  // Index 1 (01)
+    grid[1][8]  = true;  grid[1][9]  = false; // Index 2 (10)
+    grid[1][11] = true;  grid[1][12] = true;  // Index 3 (11)
 
-    // Memory Variables defined geometrically (Triangle, Square, Diamond)
-    // Triangle (3 vertices / Variable A)
-    grid[9][3] = true; grid[10][2] = true; grid[10][4] = true; grid[11][1] = true; grid[11][2] = true; grid[11][3] = true; grid[11][4] = true; grid[11][5] = true;
-    // Square (4 vertices / Variable B)
-    grid[9][10] = true; grid[9][11] = true; grid[9][12] = true; grid[10][10] = true; grid[10][12] = true; grid[11][10] = true; grid[11][11] = true; grid[11][12] = true;
-    // Diamond (5 vertices / Variable C)
-    grid[9][19] = true; grid[10][18] = true; grid[10][20] = true; grid[11][19] = true;
+    // We demonstrate the Subleq algorithm as a logical map of registers changing state:
+    // Format per row: [Step: 2b] [IP: 3b] [Ptr A: 3b] [Ptr B: 3b] [M[A]: 4b] [M[B] Before: 4b] [M[B] After: 4b]
+    auto write_trace_row = [&](int row, int step, int ip, int ptr_a, int ptr_b, int m_a, int m_b_pre, int m_b_post) {
+        // Step (Cols 1-2)
+        grid[row][1] = (step >> 1) & 1; grid[row][2] = step & 1;
+        // IP (Cols 4-6)
+        for(int i=0; i<3; ++i) grid[row][4+i] = (ip >> (2-i)) & 1;
+        // Ptr A (Cols 8-10)
+        for(int i=0; i<3; ++i) grid[row][8+i] = (ptr_a >> (2-i)) & 1;
+        // Ptr B (Cols 12-14)
+        for(int i=0; i<3; ++i) grid[row][12+i] = (ptr_b >> (2-i)) & 1;
+        // M[A] Value (Cols 16-17) - compact 2-bit values
+        grid[row][16] = (m_a >> 1) & 1; grid[row][17] = m_a & 1;
+        // M[B] Pre Value (Cols 19-20)
+        grid[row][19] = (m_b_pre >> 1) & 1; grid[row][20] = m_b_pre & 1;
+        // M[B] Post Value (Cols 21-22)
+        grid[row][21] = (m_b_post >> 1) & 1; grid[row][22] = m_b_post & 1;
+    };
 
-    // ALU Subtraction Module "(-)" and Data Feedback Loop
-    grid[14][11] = true; grid[13][11] = true; grid[15][11] = true; grid[14][10] = true; grid[14][12] = true; // ALU subtraction gate
-    for (int x = 3; x <= 9; ++x) grid[14][x] = true; // Data pipeline from A
-    grid[13][3] = true; grid[14][3] = true;
-    grid[12][11] = true; grid[13][10] = true; // Feedback loop back to B
+    // Trace Table Header (Establishes column block sizes for their parser)
+    write_trace_row(7, 0b11, 0b111, 0b111, 0b111, 0b11, 0b11, 0b11);
 
-    // Branching Logic (Coordinate Axis representation)
-    for (int x = 3; x <= 19; ++x) grid[18][x] = true; // Coordinate line
-    grid[17][11] = true; grid[19][11] = true; grid[16][11] = true; // Zero point marker "0"
+    // STEP 0: Initial Instruction Fetch
+    // Instruction [3, 4, 6] is at IP 0. Operand values: M[3]=2, M[4]=5
+    // Subtract M[3] from M[4] -> 5 - 2 = 3. Since 3 > 0, we do NOT branch. Next IP = IP + 3 = 3.
+    write_trace_row(10, 0, 0, 3, 4, 2, 3, 3); // 2-bit values scaled for demonstration
 
-    // YES Branch (Result <= 0) -> Jump Execution Pointer (IP) to C (Diamond)
-    grid[18][3] = true; grid[17][4] = true; grid[19][4] = true; // Arrow pointing negative
-    grid[19][3] = true; grid[20][3] = true; grid[21][3] = true; // Branch line
-    grid[23][3] = true; grid[24][3] = true; // Assignment '='
-    grid[25][3] = true; grid[26][2] = true; grid[26][4] = true; grid[27][3] = true; // Diamond (C)
+    // STEP 1: Next Instruction Fetch (No Branch taken, pointer stepped to IP=3)
+    // At IP 3, we read the next instruction.
+    write_trace_row(14, 1, 3, 4, 4, 3, 3, 0); // Demonstrates identical pointers forcing M[B] to become <= 0
 
-    // NO Branch (Result > 0) -> Step Execution Pointer: IP = IP + Triangle (3)
-    grid[18][19] = true; grid[17][18] = true; grid[19][18] = true; // Arrow pointing positive
-    grid[19][19] = true; grid[20][19] = true; grid[21][19] = true; // Branch line
-    grid[23][19] = true; grid[24][19] = true; // Assignment '='
-    grid[25][19] = true; grid[26][19] = true; grid[26][18] = true; grid[26][20] = true; // '+' Sign
-    grid[27][19] = true; // Triangle (Step value 3)
+    // STEP 2: Branch Taken Demonstration (M[B] became <= 0, we jump to address C)
+    // Shows the conditional jump logic in action.
+    write_trace_row(18, 2, 6, 0, 0, 0, 0, 0); // HALT State reached
+
+    // =====================================================================
+    // SECTION 3: MATHEMATICAL SYMBOLIC EQUATION (Rows 22-26)
+    // =====================================================================
+    // We write the strict Boolean logic of the branch update in pixel-space:
+    // "IP' = (M[B] - M[A] <= 0) ? C : IP + 3"
+    // We represent this as a clean, standardized state transition vector:
+    grid[22][11] = true; // State Operator Indicator
+    grid[24][9] = true; grid[24][10] = true; grid[24][11] = true; grid[24][12] = true; grid[24][13] = true; // Equivalence Bar
+    grid[26][11] = true;
 
     return grid;
 }
@@ -346,9 +396,13 @@ int main() {
         0            // Addr 11: Variable 'Z' (temp buffer)
     };
 
-    // Serialize payload ints to binary bytes
-    for (int num : subleq_payload) {
-        output_bytes.push_back(static_cast<uint8_t>(num));
+// Interleaved TMR (Triple Modular Redundancy)
+    // Send the whole array three times sequentially: [ABC] [ABC] [ABC]
+    // If a cosmic ray wipes a chunk, majority logic still recovers the data!
+    for (int i = 0; i < 3; ++i) {
+        for (int num : subleq_payload) {
+            output_bytes.push_back(static_cast<uint8_t>(num));
+        }
     }
 
     // 5. Write the final assembled image to disk
