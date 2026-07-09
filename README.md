@@ -16,5 +16,5 @@ The assembled file (`cosmic_message.bin`) is structured into two main components
 
 ## How to Build and Run
 ```bash
-g++ -std=c++17 -O3 main.cpp -o cosmic_assembler
-./cosmic_assembler
+g++ -std=c++17 -O3 main.cpp -o cosmic_message
+./cosmic_message
