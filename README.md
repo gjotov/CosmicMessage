@@ -20,7 +20,7 @@ g++ -std=c++17 -O3 main.cpp -o cosmic_message
 ./cosmic_message
 ```
 
-## The "Gauntlet Test": Zero-Knowledge AI Cryptanalysis
+## The Gauntlet Test
 
 To prove that the protocol is truly universal and free from human cognitive bias, we conducted an unprecedented experiment. We submitted the raw, unannotated 2001-bit matrices to the world's most advanced reasoning AI models. No context, no language hints, no human concepts were provided. 
 
