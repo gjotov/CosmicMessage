@@ -1,6 +1,8 @@
 # CosmicMessage
 
-A C++17 system utility designed to compile and serialize a self-extracting, mathematically and physically rigorous message intended for Messaging Extraterrestrial Intelligence.
+A C++17 system utility designed to compile and serialize a self-extracting, mathematically and physically rigorous message intended for Messaging Extraterrestrial Intelligence.\
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/)
 
 ## Architecture Overview
 The assembled file (`cosmic_message.bin`) is structured into two main components:
