@@ -16,9 +16,9 @@ jobs:
 
     - name: Compile C++17 Source Code
       run: |
-        g++ -std=c++17 -O3 cosmic_assembler.cpp -o cosmic_assembler
+        g++ -std=c++17 -O3 main.cpp -o cosmic_assembler
         
-    - name: Execute SBMG v3.0 (Check this log for Matrices!)
+    - name: Execute SBMG
       run: |
         ./cosmic_assembler
         
