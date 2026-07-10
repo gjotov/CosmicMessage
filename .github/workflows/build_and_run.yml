@@ -1,0 +1,30 @@
+name: Compile and Generate Cosmic Message
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: 
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Compile C++17 Source Code
+      run: |
+        g++ -std=c++17 -O3 cosmic_assembler.cpp -o cosmic_assembler
+        
+    - name: Execute SBMG v3.0 (Check this log for Matrices!)
+      run: |
+        ./cosmic_assembler
+        
+    - name: Upload Interstellar Binary Payload
+      uses: actions/upload-artifact@v4
+      with:
+        name: cosmic_message_binary
+        path: cosmic_message.bin
+        retention-days: 90
